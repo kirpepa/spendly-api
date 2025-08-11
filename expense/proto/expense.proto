@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package expense;
+
+option go_package = "services/expense/proto";
+
+service ExpenseService {
+  rpc AddExpense(AddExpenseRequest) returns (ExpenseResponse);
+}
+
+message AddExpenseRequest {
+  uint64 group_id = 1;
+  uint64 payer_id = 2;
+  double amount = 3;
+}
+
+message ExpenseResponse {
+  string message = 1;
+}
