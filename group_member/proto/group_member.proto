@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package group_member;
+
+option go_package = "services/group_member/proto";
+
+service GroupMemberService {
+  rpc AddMember(AddMemberRequest) returns (MemberResponse);
+  rpc GetMembers(GetMembersRequest) returns (GetMembersResponse);
+}
+
+message AddMemberRequest {
+  uint64 group_id = 1;
+  uint64 user_id = 2;
+}
+
+message GetMembersRequest {
+  uint64 group_id = 1;
+}
+
+message Member {
+  uint64 id = 1;
+  uint64 group_id = 2;
+  uint64 user_id = 3;
+  double balance = 4;
+}
+
+message MemberResponse {
+  Member member = 1;
+}
+
+message GetMembersResponse {
+  repeated Member members = 1;
+}

@@ -1,0 +1,52 @@
+package service
+
+import (
+	"context"
+	"github.com/kirpepa/spendly-api/group_member/model"
+	"github.com/kirpepa/spendly-api/group_member/proto"
+	"github.com/kirpepa/spendly-api/group_member/repository"
+)
+
+type GroupMemberServer struct {
+	proto.UnimplementedGroupMemberServiceServer
+	repo *repository.GroupMemberRepo
+}
+
+func NewGroupMemberServer(repo *repository.GroupMemberRepo) *GroupMemberServer {
+	return &GroupMemberServer{repo: repo}
+}
+
+func (s *GroupMemberServer) AddMember(ctx context.Context, req *proto.AddMemberRequest) (*proto.MemberResponse, error) {
+	member := &model.GroupMember{
+		GroupID: uint(req.GroupId),
+		UserID:  uint(req.UserId),
+	}
+	if err := s.repo.AddMember(member); err != nil {
+		return nil, err
+	}
+	return &proto.MemberResponse{
+		Member: &proto.Member{
+			Id:      uint64(member.ID),
+			GroupId: uint64(member.GroupID),
+			UserId:  uint64(member.UserID),
+			Balance: member.Balance,
+		},
+	}, nil
+}
+
+func (s *GroupMemberServer) GetMembers(ctx context.Context, req *proto.GetMembersRequest) (*proto.GetMembersResponse, error) {
+	members, err := s.repo.GetByGroup(uint(req.GroupId))
+	if err != nil {
+		return nil, err
+	}
+	var protoMembers []*proto.Member
+	for _, m := range members {
+		protoMembers = append(protoMembers, &proto.Member{
+			Id:      uint64(m.ID),
+			GroupId: uint64(m.GroupID),
+			UserId:  uint64(m.UserID),
+			Balance: m.Balance,
+		})
+	}
+	return &proto.GetMembersResponse{Members: protoMembers}, nil
+}
