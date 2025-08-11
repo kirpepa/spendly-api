@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package group;
+
+option go_package = "services/group/proto";
+
+service GroupService {
+  rpc CreateGroup(CreateGroupRequest) returns (GroupResponse);
+  rpc GetGroup(GetGroupRequest) returns (GroupResponse);
+  rpc ListGroups(ListGroupsRequest) returns (ListGroupsResponse);
+}
+
+message CreateGroupRequest {
+  string name = 1;
+  string description = 2;
+  uint64 owner_id = 3;
+}
+
+message GetGroupRequest {
+  uint64 group_id = 1;
+}
+
+message ListGroupsRequest {
+  uint64 owner_id = 1;
+}
+
+message GroupResponse {
+  uint64 id = 1;
+  string name = 2;
+  string description = 3;
+  uint64 owner_id = 4;
+}
+
+message ListGroupsResponse {
+  repeated GroupResponse groups = 1;
+}

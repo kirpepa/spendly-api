@@ -2,20 +2,16 @@ package config
 
 import (
 	"github.com/joho/godotenv"
-	"log"
+	"os"
 )
 
-func LoadEnv() {
-	if err := godotenv.Load(); err != nil {
-		log.Println("No .env file found, using system ENV")
-	}
+type Config struct {
+	DBUrl string
 }
 
-/*
-func GetEnv(key, fallback string) string {
-	if value := os.Getenv(key); value != "" {
-		return value
+func LoadConfig() *Config {
+	_ = godotenv.Load()
+	return &Config{
+		DBUrl: os.Getenv("DB_URL"),
 	}
-	return fallback
 }
-*/
