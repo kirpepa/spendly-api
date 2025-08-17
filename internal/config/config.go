@@ -12,6 +12,7 @@ type Config struct {
 	APIPort        string
 	JWTSecret      string
 	JWTExpire      time.Duration
+	GRPCTimeout    time.Duration
 	AuthService    string
 	UserService    string
 	GroupService   string
@@ -27,11 +28,17 @@ func LoadConfig() *Config {
 		log.Fatalf("Invalid JWT_EXPIRE: %v", err)
 	}
 
+	grpcTimeout, err := time.ParseDuration(os.Getenv("GRPC_TIMEOUT"))
+	if err != nil {
+		log.Fatalf("Invalid GRPC_TIMEOUT: %v", err)
+	}
+
 	return &Config{
 		DBUrl:          os.Getenv("DB_URL"),
 		APIPort:        os.Getenv("API_PORT"),
 		JWTSecret:      os.Getenv("JWT_SECRET"),
 		JWTExpire:      jwtExpire,
+		GRPCTimeout:    grpcTimeout,
 		AuthService:    os.Getenv("AUTH_SERVICE_ADDR"),
 		UserService:    os.Getenv("USER_SERVICE_ADDR"),
 		GroupService:   os.Getenv("GROUP_SERVICE_ADDR"),
